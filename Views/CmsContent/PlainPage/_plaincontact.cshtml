@@ -1,0 +1,48 @@
+﻿@inherits CmsWebViewPage
+
+<div id="contactForm">
+	@{
+		var cap = new Captcha();
+		cap.SetBackColor("#ffffff");
+		cap.SetForeColor("#333333");
+		cap.SetNoiseColor("#999999");
+
+		using (var cmtFrm = CarrotCakeHtml.BeginContactForm(new AjaxOptions { UpdateTargetId = "contactForm" })) {
+			var cmt = cmtFrm.GetModelHelper("_plaincontact", cap);
+			if (!cmt.ViewData.Model.IsSaved) {
+				@cmt.ValidationSummary(true, "", new { @class = "text-danger" })
+				<div>
+					<label>Name</label><br />
+					@cmt.TextBoxFor(m => m.CommenterName)
+					@cmt.ValidationMessageFor(m => m.CommenterName, "", new { @class = "text-danger" })
+				</div>
+
+				<div>
+					<label>Email</label><br />
+					@cmt.TextBoxFor(m => m.CommenterEmail)
+					@cmt.ValidationMessageFor(m => m.CommenterEmail, "", new { @class = "text-danger" })
+				</div>
+
+				<div>
+					<label>Your Comments</label>
+					@cmt.ValidationMessageFor(m => m.PostCommentText, "", new { @class = "text-danger" })
+					<br />
+					@cmt.TextAreaFor(m => m.PostCommentText, new { rows = "5", cols = "50" })
+				</div>
+
+				<div>
+					@cap<br />
+					@cap.Instructions <br />
+					@cmt.TextBoxFor(m => m.ValidationValue)
+					@cmt.ValidationMessageFor(m => m.ValidationValue, "", new { @class = "text-danger" })
+				</div>
+
+				<br />
+				<input class="button" type="submit" value="Send Feedback" />
+				<input class="button" type="reset" value="Clear form" />
+			} else {
+				<p>Thank you for your comment.</p>
+			}
+		}
+	}
+</div>
